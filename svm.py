@@ -78,7 +78,12 @@ def ex_2_a(x_train, y_train, x_test, y_test):
     ## Train an SVM with a linear kernel for the given dataset
     ## and plot the decision boundary and support vectors  for each using 'plot_svm_decision_boundary' function
     ###########
-    pass
+
+    machine = svm.SVC(kernel='linear')
+    machine.fit(x_train, y_train)
+    plot_svm_decision_boundary(machine, x_train, y_train, x_test, y_test)
+
+    print(machine.score(x_test, y_test))
 
 
 def ex_2_b(x_train, y_train, x_test, y_test):
@@ -98,7 +103,20 @@ def ex_2_b(x_train, y_train, x_test, y_test):
     ## Plot the decision boundary and support vectors for the best value of degree
     ## using 'plot_svm_decision_boundary' function
     ###########
-    degrees = range(1, 20)
+
+    degrees = range(1, 21)
+    machines = [svm.SVC(kernel='poly', degree=d, coef0=1.0) for d in degrees]
+
+    for machine in machines:
+        machine.fit(x_train, y_train)
+
+    trainScores = [machine.score(x_train, y_train) for machine in machines]
+    testScores = [machine.score(x_test, y_test) for machine in machines]
+
+    plot_score_vs_degree(trainScores, testScores, degrees)
+
+    bestDegree = testScores.index(max(testScores))
+    plot_svm_decision_boundary(machines[bestDegree], x_train, y_train, x_test, y_test)
 
 
 def ex_2_c(x_train, y_train, x_test, y_test):
@@ -118,6 +136,18 @@ def ex_2_c(x_train, y_train, x_test, y_test):
     ## using 'plot_svm_decision_boundary' function
     ###########
     gammas = np.arange(0.01, 2, 0.02)
+    machines = [svm.SVC(kernel='rbf', gamma=g, coef0=1.0) for g in gammas]
+
+    for machine in machines:
+        machine.fit(x_train, y_train)
+
+    trainScores = [machine.score(x_train, y_train) for machine in machines]
+    testScores = [machine.score(x_test, y_test) for machine in machines]
+
+    plot_score_vs_gamma(trainScores, testScores, gammas)
+
+    bestDegree = testScores.index(max(testScores))
+    plot_svm_decision_boundary(machines[bestDegree], x_train, y_train, x_test, y_test)
 
 
 def ex_3_a(x_train, y_train, x_test, y_test):
